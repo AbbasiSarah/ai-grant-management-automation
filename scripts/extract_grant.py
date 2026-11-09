@@ -44,6 +44,26 @@ def extract_requirements(text):
             documents.group(1).strip() if documents else "Not specified"
         ),
     }
+def validate_requirements(requirements):
+    """Identify grant requirements that need further checking."""
+
+    required_fields = [
+        "Grant Name",
+        "Maximum Funding",
+        "Deadline",
+        "Eligibility",
+        "Required Documents",
+    ]
+
+    missing_fields = []
+
+    for field in required_fields:
+        value = requirements.get(field, "")
+
+        if not value or value in ("Not found", "Not specified"):
+            missing_fields.append(field)
+
+    return missing_fields
 
 
 def main():
