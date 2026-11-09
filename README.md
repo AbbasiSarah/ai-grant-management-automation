@@ -1,90 +1,71 @@
 # AI Grant Management Automation
 
-## Project Overview
+A beginner-friendly Python portfolio project exploring how automation and AI-assisted workflows can support grant management.
 
-This is a beginner-friendly Python portfolio project that demonstrates how parts of a grant management workflow can be automated using structured data validation and deadline monitoring.
+## Project Objectives
 
-**Note:** This is a learning project using fictional grant data. It is not connected to real grant providers or clients.
+- Organize grant information using CSV files.
+- Validate required fields and identify missing data.
+- Monitor grant application deadlines.
+- Use prompt engineering to extract grant requirements.
+- Prepare client information checklists.
+- Document testing, human review, and responsible AI practices.
 
-## Features
+## Technologies
 
-- **Grant data validation:** Checks whether required fields are present.
-- **Missing information detection:** Identifies incomplete grant records.
-- **Deadline monitoring:** Classifies deadlines as overdue, due soon, upcoming, or invalid.
-- **Report generation:** Produces a text report summarizing validation results.
-- **Sample grant dataset:** Uses fictional grant records stored in CSV format.
-- **Documented workflow:** Includes requirement extraction prompts, client information checklists, and testing documentation.
+- **Python** — data validation and workflow automation
+- **CSV** — structured grant data
+- **Markdown** — project documentation
+- **Generative AI concepts** — requirement extraction and drafting support
+- **Unit testing** — planned validation of Python functions
 
-## Technologies Used
-
-- Python
-- CSV data processing
-- `pathlib` for file handling
-- `datetime` for deadline calculations
-- Git and GitHub
-
-## Project Structure
+## Repository Structure
 
 ```text
 ai-grant-management-automation/
 ├── docs/
+│   ├── architecture.md
 │   ├── workflow.md
+│   ├── roadmap.md
 │   ├── client-information-checklist.md
 │   ├── client-readiness-test.md
 │   ├── data-quality-test.md
-│   ├── validation-test-results.md
-│   └── deadline-test-results.md
+│   └── validation-test-results.md
 ├── prompts/
 │   └── grant-requirement-extraction.md
 ├── sample-data/
 │   └── grants.csv
 ├── scripts/
 │   └── grant_tracker.py
-├── reports/
 └── README.md
 ```
 
-## How It Works
+*The structure above reflects the intended project layout; update the list if your repository differs.*
 
-1. Reads grant records from a CSV file.
-2. Checks required fields for missing information.
-3. Evaluates each grant deadline.
-4. Summarizes incomplete records and deadline statuses.
-5. Saves the results to `reports/grant_review.txt`.
+## Current Capabilities
 
-## How to Run
-
-1. Install Python 3 if it is not already installed.
-2. Download or clone this repository.
-3. Open a terminal in the project folder.
-4. Run:
-
-```bash
-python scripts/grant_tracker.py
-```
-
-The generated report is saved in the `reports` folder.
-
-## Testing
-
-The project includes documentation for data quality checks and deadline test cases. Test results should be marked as passed only after verifying the program's actual output.
-
-## Current Limitations
-
-- Grant records are fictional.
-- The program checks whether fields are present but does not verify grant eligibility with funding providers.
-- Deadline monitoring runs only when the script is executed.
-- Automatic emails, scheduled checks, and live grant discovery are not implemented.
-- The program does not submit grant applications.
+- Sample grant data management
+- Required-field validation examples
+- Grant deadline monitoring in the Python tracker
+- AI prompt templates for requirement extraction
+- Client readiness and data quality documentation
 
 ## Future Improvements
 
-- Add automated deadline reminders.
-- Validate funding amounts and date formats more thoroughly.
-- Add automated unit tests.
-- Integrate AI-assisted grant requirement extraction.
-- Develop a simple dashboard for reviewing grants.
+- Test the Python tracker locally.
+- Add automated tests for deadline calculations.
+- Extract requirements from grant documents.
+- Generate structured grant summaries.
+- Develop a grant tracking dashboard.
 
-## Learning Goals
+## Responsible AI
 
-This project demonstrates beginner-level skills in Python programming, CSV processing, data validation, date handling, file management, workflow documentation, and GitHub version control.
+This project uses fictional grant records for educational purposes. Grant requirements and deadlines must be verified against official sources. AI-generated information requires human review.
+
+## Project Status
+
+**Learning project in development.** Not all planned features have been implemented or tested.
+
+## Author
+
+Created as a practical portfolio project to develop skills in Python, AI-assisted workflow automation, and responsible AI.
