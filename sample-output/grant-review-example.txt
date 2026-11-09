@@ -1,0 +1,20 @@
+GRANT DATA QUALITY AND DEADLINE REPORT
+==========================================
+
+Grant: Community Learning Grant
+Data status: COMPLETE
+Deadline status: Example status — depends on the date the script runs
+
+Grant: Digital Skills Grant
+Data status: COMPLETE
+Deadline status: Example status — depends on the date the script runs
+
+Grant: Green Communities Grant
+Data status: COMPLETE
+Deadline status: Example status — depends on the date the script runs
+
+==========================================
+Total grants checked: 3
+Incomplete records: 0
+
+Note: This is an illustrative example, not output verified from a current run of the Python script. Actual deadline statuses and summary counts depend on the CSV data and execution date.
