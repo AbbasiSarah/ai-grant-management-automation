@@ -38,6 +38,16 @@ Present the results using these headings:
 - Required Documents
 - Questions for the Client
 - Information Requiring Verification
+- 
+## Formatting Rules
+- Use clear Markdown headings.
+- Use bullet points for questions.
+- For information requiring verification, use a Markdown table with exactly three columns:
+  | Item | Status | Action Required |
+- Include one header row and one row per item.
+- Do not create separate tables for individual cells.
+- Do not repeat table headers for each item.
+
 
 ## Test Announcement
 The Community Learning Grant provides up to $10,000 for eligible nonprofit organizations delivering educational programs. Applicants must submit a project proposal, a detailed budget, and proof of registration. Applications close on February 15, 2027.
