@@ -2,70 +2,81 @@
 import csv
 from pathlib import Path
 
-# Find the project folder and grant data file
-project_folder = Path(__file__).resolve().parent.parent
-csv_file = project_folder / "sample-data" / "grants.csv"
+# Find the main project folder
+PROJECT_DIR = Path(__file__).resolve().parent.parent
 
-# Fields that every grant record should contain
-required_fields = [
+# Input and output file locations
+CSV_FILE = PROJECT_DIR / "sample-data" / "grants.csv"
+REPORT_DIR = PROJECT_DIR / "reports"
+REPORT_FILE = REPORT_DIR / "grant_review.txt"
+
+# Fields every grant record should contain
+REQUIRED_FIELDS = [
     "Grant Name",
     "Funder",
     "Deadline",
     "Eligibility",
     "Funding Amount",
-    "Required Documents",
+    "Required Documents"
 ]
 
-# Read the CSV file
-with csv_file.open("r", encoding="utf-8-sig", newline="") as file:
-    reader = csv.DictReader(file)
-    grants = list(reader)
 
-print("AI Grant Management Automation")
-print("=" * 35)
-print(f"Total grants found: {len(grants)}")
+def check_grants():
+    """Read grant records and identify missing information."""
 
-for grant in grants:
-    print(f"\nGrant: {grant.get('Grant Name', 'Unknown')}")
-    print(f"Deadline: {grant.get('Deadline', 'Unknown')}")
+    if not CSV_FILE.exists():
+        print(f"Error: CSV file not found: {CSV_FILE}")
+        return
 
-    missing = [
-        field
-        for field in required_fields
-        if not grant.get(field, "").strip()
+    with CSV_FILE.open("r", newline="", encoding="utf-8-sig") as file:
+        reader = csv.DictReader(file)
+        grants = list(reader)
+
+    report = [
+        "GRANT DATA QUALITY REPORT",
+        "=" * 35,
+        ""
     ]
 
-    if missing:
-        print("Review needed: Missing " + ", ".join(missing))
-    else:
-        print("Basic data check: All required fields are present.")
-
-# Save a simple report
-report_folder = project_folder / "reports"
-report_folder.mkdir(exist_ok=True)
-
-report_file = report_folder / "grant_review.txt"
-
-with report_file.open("w", encoding="utf-8") as file:
-    file.write("Grant Tracker Review\n")
-    file.write("====================\n")
-    file.write(f"Total grants: {len(grants)}\n\n")
+    incomplete_count = 0
 
     for grant in grants:
-        file.write(f"Grant: {grant.get('Grant Name', 'Unknown')}\n")
-        file.write(f"Deadline: {grant.get('Deadline', 'Unknown')}\n")
+        grant_name = grant.get("Grant Name", "").strip()
+        grant_name = grant_name or "Unnamed Grant"
 
-        missing = [
-            field
-            for field in required_fields
-            if not grant.get(field, "").strip()
-        ]
+        missing_fields = []
 
-        if missing:
-            file.write("Missing fields: " + ", ".join(missing) + "\n")
+        for field in REQUIRED_FIELDS:
+            value = grant.get(field)
+
+            if value is None or not value.strip():
+                missing_fields.append(field)
+
+        report.append(f"Grant: {grant_name}")
+
+        if missing_fields:
+            incomplete_count += 1
+            report.append("Status: INCOMPLETE")
+            report.append(
+                "Missing fields: " + ", ".join(missing_fields)
+            )
         else:
-            file.write("All required fields are present.\n")
+            report.append("Status: All required fields present")
 
-        file.write("\n")
+        report.append("")
 
-print(f"\nReport saved to: {report_file}")
+    report.append("=" * 35)
+    report.append(f"Total records checked: {len(grants)}")
+    report.append(f"Incomplete records: {incomplete_count}")
+
+    # Save the report
+    REPORT_DIR.mkdir(parents=True, exist_ok=True)
+    REPORT_FILE.write_text("\n".join(report), encoding="utf-8")
+
+    # Display the report
+    print("\n".join(report))
+    print(f"\nReport saved to: {REPORT_FILE}")
+
+
+if __name__ == "__main__":
+    check_grants()
