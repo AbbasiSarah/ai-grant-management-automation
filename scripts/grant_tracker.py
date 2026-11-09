@@ -1,12 +1,15 @@
 
 import csv
 from pathlib import Path
+from datetime import date, datetime
 
+# Project file locations
 PROJECT_DIR = Path(__file__).resolve().parent.parent
 CSV_FILE = PROJECT_DIR / "sample-data" / "grants.csv"
 REPORT_DIR = PROJECT_DIR / "reports"
 REPORT_FILE = REPORT_DIR / "grant_review.txt"
 
+# Required grant information
 REQUIRED_FIELDS = [
     "Grant Name",
     "Funder",
@@ -17,8 +20,28 @@ REQUIRED_FIELDS = [
 ]
 
 
+def get_deadline_status(deadline_text):
+    """Check whether a grant deadline is overdue or approaching."""
+
+    try:
+        deadline = datetime.strptime(
+            deadline_text.strip(), "%Y-%m-%d"
+        ).date()
+    except (ValueError, AttributeError):
+        return "INVALID DEADLINE"
+
+    days_left = (deadline - date.today()).days
+
+    if days_left < 0:
+        return f"OVERDUE ({abs(days_left)} days ago)"
+    elif days_left <= 30:
+        return f"DUE SOON ({days_left} days left)"
+    else:
+        return f"UPCOMING ({days_left} days left)"
+
+
 def check_grants():
-    """Check grant records for missing required information."""
+    """Validate grant information and monitor deadlines."""
 
     if not CSV_FILE.exists():
         print(f"Error: CSV file not found: {CSV_FILE}")
@@ -31,17 +54,19 @@ def check_grants():
         grants = list(reader)
 
     report = [
-        "GRANT DATA QUALITY REPORT",
-        "=" * 35,
+        "GRANT DATA QUALITY AND DEADLINE REPORT",
+        "=" * 42,
         ""
     ]
 
     incomplete_count = 0
+    overdue_count = 0
+    due_soon_count = 0
+    invalid_deadline_count = 0
 
     for grant in grants:
-        grant_name = (
-            grant.get("Grant Name") or ""
-        ).strip() or "Unnamed Grant"
+        name = (grant.get("Grant Name") or "").strip()
+        name = name or "Unnamed Grant"
 
         missing_fields = []
 
@@ -51,33 +76,57 @@ def check_grants():
             if value is None or not value.strip():
                 missing_fields.append(field)
 
-        report.append(f"Grant: {grant_name}")
+        deadline_status = get_deadline_status(
+            grant.get("Deadline") or ""
+        )
 
         if missing_fields:
             incomplete_count += 1
-            report.append("Status: INCOMPLETE")
+
+        if deadline_status.startswith("OVERDUE"):
+            overdue_count += 1
+        elif deadline_status.startswith("DUE SOON"):
+            due_soon_count += 1
+        elif deadline_status == "INVALID DEADLINE":
+            invalid_deadline_count += 1
+
+        report.append(f"Grant: {name}")
+
+        if missing_fields:
+            report.append("Data status: INCOMPLETE")
             report.append(
                 "Missing fields: " + ", ".join(missing_fields)
             )
         else:
-            report.append(
-                "Status: All required fields present"
-            )
+            report.append("Data status: COMPLETE")
 
+        report.append(f"Deadline status: {deadline_status}")
         report.append("")
 
-    report.append("=" * 35)
-    report.append(f"Total records checked: {len(grants)}")
+    report.append("=" * 42)
+    report.append(f"Total grants checked: {len(grants)}")
     report.append(f"Incomplete records: {incomplete_count}")
+    report.append(f"Overdue grants: {overdue_count}")
+    report.append(f"Grants due within 30 days: {due_soon_count}")
+    report.append(f"Invalid deadlines: {invalid_deadline_count}")
     report.append("")
 
-    if incomplete_count > 0:
+    if incomplete_count > 0 or invalid_deadline_count > 0:
         report.append(
-            "ACTION REQUIRED: Review incomplete grant records."
+            "ACTION REQUIRED: Review incomplete records "
+            "and invalid deadlines."
+        )
+    elif overdue_count > 0:
+        report.append(
+            "ACTION REQUIRED: Review overdue grant deadlines."
+        )
+    elif due_soon_count > 0:
+        report.append(
+            "REMINDER: Review grants approaching their deadlines."
         )
     else:
         report.append(
-            "All grant records passed the required-field check."
+            "All grant records passed the required checks."
         )
 
     REPORT_DIR.mkdir(parents=True, exist_ok=True)
