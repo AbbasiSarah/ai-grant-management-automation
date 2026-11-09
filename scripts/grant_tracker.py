@@ -2,15 +2,11 @@
 import csv
 from pathlib import Path
 
-# Find the main project folder
 PROJECT_DIR = Path(__file__).resolve().parent.parent
-
-# Input and output file locations
 CSV_FILE = PROJECT_DIR / "sample-data" / "grants.csv"
 REPORT_DIR = PROJECT_DIR / "reports"
 REPORT_FILE = REPORT_DIR / "grant_review.txt"
 
-# Fields every grant record should contain
 REQUIRED_FIELDS = [
     "Grant Name",
     "Funder",
@@ -22,13 +18,15 @@ REQUIRED_FIELDS = [
 
 
 def check_grants():
-    """Read grant records and identify missing information."""
+    """Check grant records for missing required information."""
 
     if not CSV_FILE.exists():
         print(f"Error: CSV file not found: {CSV_FILE}")
         return
 
-    with CSV_FILE.open("r", newline="", encoding="utf-8-sig") as file:
+    with CSV_FILE.open(
+        "r", newline="", encoding="utf-8-sig"
+    ) as file:
         reader = csv.DictReader(file)
         grants = list(reader)
 
@@ -41,8 +39,9 @@ def check_grants():
     incomplete_count = 0
 
     for grant in grants:
-        grant_name = grant.get("Grant Name", "").strip()
-        grant_name = grant_name or "Unnamed Grant"
+        grant_name = (
+            grant.get("Grant Name") or ""
+        ).strip() or "Unnamed Grant"
 
         missing_fields = []
 
@@ -61,19 +60,31 @@ def check_grants():
                 "Missing fields: " + ", ".join(missing_fields)
             )
         else:
-            report.append("Status: All required fields present")
+            report.append(
+                "Status: All required fields present"
+            )
 
         report.append("")
 
     report.append("=" * 35)
     report.append(f"Total records checked: {len(grants)}")
     report.append(f"Incomplete records: {incomplete_count}")
+    report.append("")
 
-    # Save the report
+    if incomplete_count > 0:
+        report.append(
+            "ACTION REQUIRED: Review incomplete grant records."
+        )
+    else:
+        report.append(
+            "All grant records passed the required-field check."
+        )
+
     REPORT_DIR.mkdir(parents=True, exist_ok=True)
-    REPORT_FILE.write_text("\n".join(report), encoding="utf-8")
+    REPORT_FILE.write_text(
+        "\n".join(report), encoding="utf-8"
+    )
 
-    # Display the report
     print("\n".join(report))
     print(f"\nReport saved to: {REPORT_FILE}")
 
